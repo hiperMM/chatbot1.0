@@ -137,40 +137,28 @@ bagOfWords = np.asarray(matriz)
 print (bagOfWords)
 #TF IDF
 
+import pandas as pd
+from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+ 
 
-IDF = {}
-for palavra in frequenciaPalavras:
-  
-    doc_count = 0 
-    for dado in megaTexto:
-        if palavra in nltk.word_tokenize(dado):
-            doc_count += 1
-    IDF[palavra] = np.log((len(megaTexto)/doc_count)+1)
-    
-print (IDF)
-TF= {}
+tf_idf_vec = TfidfVectorizer(use_idf=True, 
+                        smooth_idf=False,  
+                        ngram_range=(1,1),stop_words='english') 
 
-for palavra in frequenciaPalavras:
-    documentoTF = []
-    for dado in megaTexto:
-        frequencia = 0
-        for palavra2 in nltk.word_tokenize(dado):
-            if palavra2 == palavra:
-                frequencia += 1
-        tfPalavra = frequencia/len(nltk.word_tokenize(dado))
-        documentoTF.append(tfPalavra)
-    TF[palavra] = documentoTF
+tf_idf_data = tf_idf_vec.fit_transform([textoPage1,textoPage2,textoPage3,textoPage4,textoPage5])
 
-print (TF)
-# TF-IDF cálculo
+tf_idf_dataframe=pd.DataFrame(tf_idf_data.toarray(),columns=tf_idf_vec.get_feature_names())
+print(tf_idf_dataframe)
+print("\n")
+ 
 
-TfIdf = []
-
-for palavra in TF.keys():
-    tfidf = []
-    for valor in TF[palavra]:
-        pontos = valor * IDF[palavra]
-        tfidf.append(pontos)
-    TfIdf.append(tfidf)
-    
-print (TfIdf)
+tf_idf_vec_smooth = TfidfVectorizer(use_idf=True,  
+                        smooth_idf=True,  
+                        ngram_range=(1,1),stop_words='english')
+ 
+ 
+tf_idf_data_smooth = tf_idf_vec_smooth.fit_transform([textoPage1,textoPage2,textoPage3,textoPage4,textoPage5])
+ 
+print("With Smoothing:")
+tf_idf_dataframe_smooth=pd.DataFrame(tf_idf_data_smooth.toarray(),columns=tf_idf_vec_smooth.get_feature_names())
+print(tf_idf_dataframe_smooth)
