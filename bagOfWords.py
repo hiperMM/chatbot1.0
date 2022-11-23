@@ -130,6 +130,8 @@ import numpy as np
 
 matriz = []
 
+matriz.append(frequenciaPalavras) 
+
 for dado in megaTexto:
   vetor = []
   for palavra in frequenciaPalavras:
